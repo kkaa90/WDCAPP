@@ -14,7 +14,7 @@
         android:theme="@style/Theme.WDCAPP"
         tools:targetApi="31">
         <activity
-            android:name=".Test"
+            android:name="com.Test"
             android:exported="false"
             android:label="@string/title_activity_test"
             android:theme="@style/Theme.WDCAPP" />
