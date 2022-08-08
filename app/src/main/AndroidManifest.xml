@@ -14,15 +14,10 @@
         android:theme="@style/Theme.WDCAPP"
         tools:targetApi="31">
         <activity
-            android:name="com.Test"
-            android:exported="false"
-            android:label="@string/title_activity_test"
-            android:theme="@style/Theme.WDCAPP" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.WDCAPP.NoActionBar">
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.WDCAPP">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
