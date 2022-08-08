@@ -81,7 +81,7 @@ class RouteAction(navHostController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigationGraph(starting: String = NAVROUTE.MAIN.routeName) {
+fun NavigationGraph(starting: String = NAVROUTE.LOADING.routeName) {
     val navController = rememberNavController()
     val routeAction = remember(navController) { RouteAction(navController) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -89,32 +89,22 @@ fun NavigationGraph(starting: String = NAVROUTE.MAIN.routeName) {
     val mainViewModel: MainViewModel = viewModel()
     val boardViewModel: BoardViewModel = viewModel()
     val wdcViewModel: WdcViewModel = viewModel()
+
     ModalNavigationDrawer(
         drawerContent = {
             Drawer(routeAction = routeAction, drawerState = drawerState)
         },
         drawerState = drawerState,
-        gesturesEnabled = !mainViewModel.progress
+        gesturesEnabled = mainViewModel.progress
     ) {
-        LaunchedEffect(true) {
-            mainViewModel.progress = true
-            Handler(Looper.getMainLooper()).postDelayed({ mainViewModel.progress = false }, 2000)
-        }
-        Box(
-            Modifier
-                .fillMaxSize()
-                .zIndex(1f)
-        ) {
-            if (mainViewModel.progress) {
-                LoadingView()
-            }
-        }
-
-
         NavHost(
             navController = navController,
             startDestination = starting
         ) {
+            composable(NAVROUTE.LOADING.routeName){
+                println(navController.currentBackStackEntry?.destination?.route)
+                LoadingView(routeAction = routeAction, mainViewModel)
+            }
             composable(NAVROUTE.MAIN.routeName) {
                 MainView(mainViewModel, routeAction, drawerState, scope)
             }

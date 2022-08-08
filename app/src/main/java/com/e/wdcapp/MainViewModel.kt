@@ -8,7 +8,7 @@ import com.e.wdcapp.dataclass.Board
 import com.e.wdcapp.dataclass.GameInfo
 
 class MainViewModel : ViewModel() {
-    var progress by mutableStateOf(true)
+    var progress by mutableStateOf(false)
 
     val list = listOf("오늘 경기", "어제 경기", "내일 경기")
     var selectedTab by mutableStateOf(0)
