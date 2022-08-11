@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BoardView(routeAction: RouteAction, scope: CoroutineScope, drawerState: DrawerState, boardViewModel: BoardViewModel){
+fun BoardView(routeAction: RouteAction, scope: CoroutineScope, drawerState: DrawerState){
     Scaffold(topBar = { TopBar(drawerState, scope, routeAction) }) {
 
     }

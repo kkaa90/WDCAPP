@@ -24,7 +24,7 @@ import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WDCInfoMain(routeAction: RouteAction, drawerState: DrawerState, scope: CoroutineScope , wdcViewModel: WdcViewModel) {
+fun WDCInfoMain(routeAction: RouteAction, drawerState: DrawerState, scope: CoroutineScope) {
     Scaffold(topBar = { TopBar(drawerState, scope, routeAction)}) {
         Column(modifier = Modifier.fillMaxSize().padding(it)) {
             Text("경기 일정", modifier = Modifier.padding(8.dp))

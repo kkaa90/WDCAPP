@@ -9,6 +9,36 @@ import com.e.wdcapp.dataclass.GameInfo
 
 class MainViewModel : ViewModel() {
     var progress by mutableStateOf(false)
+    var lcheck by mutableStateOf(false)
+
+    class RegisterClass(){
+        var id by mutableStateOf("")
+        var pwd by mutableStateOf("")
+        var pwd2 by mutableStateOf("")
+        var email by mutableStateOf("")
+        var nick by mutableStateOf("")
+        fun init() {
+            id = ""
+            pwd = ""
+            pwd2 = ""
+            email = ""
+            nick = ""
+        }
+    }
+    var rc = RegisterClass()
+    class LoginClass(){
+        var id by mutableStateOf("")
+        var pwd by mutableStateOf("")
+        var idCheck by mutableStateOf(false)
+        var autoLogin by mutableStateOf(false)
+        fun init(){
+
+        }
+    }
+    var lc = LoginClass()
+
+
+
 
     val list = listOf("오늘 경기", "어제 경기", "내일 경기")
     var selectedTab by mutableStateOf(0)

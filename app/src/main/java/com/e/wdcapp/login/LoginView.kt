@@ -1,5 +1,6 @@
 package com.e.wdcapp.login
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -14,12 +15,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.e.wdcapp.MainViewModel
+import com.e.wdcapp.NAVROUTE
 import com.e.wdcapp.RouteAction
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginView(routeAction: RouteAction) {
+fun LoginView(routeAction: RouteAction, m : MainViewModel) {
+    LaunchedEffect(true){
+
+    }
     val snackBarHostState = remember {
         SnackbarHostState()
     }
@@ -29,13 +35,15 @@ fun LoginView(routeAction: RouteAction) {
         IconButton(onClick = { routeAction.goBack() }) {
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
         }
-    }}) {
+    }}) { paddingValue ->
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValue),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            var id by remember { mutableStateOf("") }
-            var pwd by remember { mutableStateOf("") }
+
             Text(
                 text = "Login",
                 style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive)
@@ -43,24 +51,44 @@ fun LoginView(routeAction: RouteAction) {
             Spacer(modifier = Modifier.height(20.dp))
             TextField(
                 label = { Text(text = "Username") },
-                value = id,
-                onValueChange = { id = it })
+                value = m.lc.id,
+                onValueChange = { m.lc.id = it })
 
             Spacer(modifier = Modifier.height(20.dp))
             TextField(
                 label = { Text(text = "Password") },
-                value = pwd,
+                value = m.lc.pwd,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                onValueChange = { pwd = it })
-            Button(onClick = {
-                if (id != "" && pwd != "") {
+                onValueChange = { m.lc.pwd = it })
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { m.lc.idCheck=!m.lc.idCheck }) {
+                    Checkbox(checked = m.lc.idCheck, onCheckedChange = {m.lc.idCheck=!m.lc.idCheck})
+                    Text(text = "ID 저장", modifier = Modifier.padding(4.dp))
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { m.lc.autoLogin=!m.lc.autoLogin }) {
+                    Checkbox(checked = m.lc.autoLogin, onCheckedChange = {m.lc.autoLogin=!m.lc.autoLogin})
+                    Text(text = "자동 로그인", modifier = Modifier.padding(4.dp))
+                }
+            }
 
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(onClick = {
+                if (m.lc.id != "" && m.lc.pwd != "") {
+                    m.lcheck = true
                 } else {
                     scope.launch { snackBarHostState.showSnackbar(message = "로그인 오류") }
                 }
             }) {
                 Text(text = "로그인")
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(onClick = {
+                routeAction.navTo(NAVROUTE.REGISTER)
+            }) {
+                Text(text = "회원가입")
             }
 
 

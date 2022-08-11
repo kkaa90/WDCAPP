@@ -2,8 +2,6 @@ package com.e.wdcapp
 
 import android.app.Activity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -14,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,27 +23,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.e.wdcapp.board.BoardView
-import com.e.wdcapp.board.BoardViewModel
 import com.e.wdcapp.dataclass.Board
 import com.e.wdcapp.dataclass.GameInfo
 import com.e.wdcapp.login.LoginView
+import com.e.wdcapp.login.RegisterView
 import com.e.wdcapp.ui.theme.WDCAPPTheme
 import com.e.wdcapp.wdcinfo.TTTT
 import com.e.wdcapp.wdcinfo.WDCInfoMain
-import com.e.wdcapp.wdcinfo.WdcViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,12 +80,9 @@ fun NavigationGraph(starting: String = NAVROUTE.LOADING.routeName) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val mainViewModel: MainViewModel = viewModel()
-    val boardViewModel: BoardViewModel = viewModel()
-    val wdcViewModel: WdcViewModel = viewModel()
-
     ModalNavigationDrawer(
         drawerContent = {
-            Drawer(routeAction = routeAction, drawerState = drawerState)
+            Drawer(routeAction = routeAction, drawerState = drawerState, mainViewModel)
         },
         drawerState = drawerState,
         gesturesEnabled = mainViewModel.progress
@@ -102,23 +92,25 @@ fun NavigationGraph(starting: String = NAVROUTE.LOADING.routeName) {
             startDestination = starting
         ) {
             composable(NAVROUTE.LOADING.routeName){
-                println(navController.currentBackStackEntry?.destination?.route)
                 LoadingView(routeAction = routeAction, mainViewModel)
             }
             composable(NAVROUTE.MAIN.routeName) {
                 MainView(mainViewModel, routeAction, drawerState, scope)
             }
             composable(NAVROUTE.WDC.routeName) {
-                WDCInfoMain(routeAction, drawerState, scope, wdcViewModel)
+                WDCInfoMain(routeAction, drawerState, scope, )
             }
             composable(NAVROUTE.TEST.routeName) {
                 TTTT(routeAction = routeAction)
             }
             composable(NAVROUTE.BOARD.routeName) {
-                BoardView(routeAction, scope, drawerState, boardViewModel)
+                BoardView(routeAction, scope, drawerState, )
             }
             composable(NAVROUTE.LOGIN.routeName) {
-                LoginView(routeAction = routeAction)
+                LoginView(routeAction = routeAction,m = mainViewModel)
+            }
+            composable(NAVROUTE.REGISTER.routeName){
+                RegisterView(routeAction = routeAction, m = mainViewModel)
             }
         }
     }
@@ -154,8 +146,8 @@ fun MainView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
                 .padding(it)
+                .verticalScroll(scrollState)
         ) {
             TabRow(selectedTabIndex = mainViewModel.selectedTab) {
                 mainViewModel.list.forEachIndexed { index, item ->
