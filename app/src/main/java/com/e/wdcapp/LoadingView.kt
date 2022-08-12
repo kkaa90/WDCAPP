@@ -25,6 +25,9 @@ fun LoadingView(routeAction: RouteAction, mainViewModel: MainViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LaunchedEffect(true){
+                if(mainViewModel.lc.autoCheck()){
+                    mainViewModel.lCheck = true
+                }
                 Handler(Looper.getMainLooper()).postDelayed({routeAction.navTo(NAVROUTE.MAIN);mainViewModel.progress=true},2000)
 
             }

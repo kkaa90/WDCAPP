@@ -100,7 +100,7 @@ fun LoginView(routeAction: RouteAction, m: MainViewModel) {
             Button(onClick = {
                 if (m.lc.id != "" && m.lc.pwd != "") {
                     m.lc.saveInfo()
-                    m.lcheck = true
+                    m.lCheck = true
                     routeAction.goBack()
                 } else {
                     scope.launch { snackBarHostState.showSnackbar(message = "로그인 오류") }

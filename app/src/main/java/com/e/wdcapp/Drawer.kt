@@ -8,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
@@ -26,7 +25,7 @@ fun Drawer(routeAction: RouteAction, drawerState: DrawerState, m: MainViewModel)
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (m.lcheck) {
+        if (m.lCheck) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -45,7 +44,7 @@ fun Drawer(routeAction: RouteAction, drawerState: DrawerState, m: MainViewModel)
                         Text(text = "내 정보")
                     }
                     Spacer(modifier = Modifier.width(10.dp))
-                    TextButton(onClick = { m.lcheck = false }) {
+                    TextButton(onClick = { m.lCheck = false }) {
                         Text(text = "로그아웃")
                     }
                 }
