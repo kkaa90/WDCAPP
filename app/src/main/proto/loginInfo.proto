@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "com.e.wdcapp";
+option java_multiple_files = true;
+
+message LoginInfo {
+  string id = 1;
+  string pwd = 2;
+  bool saveId = 3;
+  bool autoLogin = 4;
+
+}

@@ -22,20 +22,22 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginView(routeAction: RouteAction, m : MainViewModel) {
-    LaunchedEffect(true){
-
+fun LoginView(routeAction: RouteAction, m: MainViewModel) {
+    LaunchedEffect(true) {
+        m.lc.init()
     }
     val snackBarHostState = remember {
         SnackbarHostState()
     }
     val scope = rememberCoroutineScope()
     Scaffold(snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
-    topBar = { Row() {
-        IconButton(onClick = { routeAction.goBack() }) {
-            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-        }
-    }}) { paddingValue ->
+        topBar = {
+            Row() {
+                IconButton(onClick = { routeAction.goBack() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                }
+            }
+        }) { paddingValue ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -62,14 +64,34 @@ fun LoginView(routeAction: RouteAction, m : MainViewModel) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 onValueChange = { m.lc.pwd = it })
             Spacer(modifier = Modifier.height(20.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { m.lc.idCheck=!m.lc.idCheck }) {
-                    Checkbox(checked = m.lc.idCheck, onCheckedChange = {m.lc.idCheck=!m.lc.idCheck})
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable {
+                        m.lc.idCheck = !m.lc.idCheck
+                        if(!m.lc.idCheck) m.lc.autoLogin=false
+                    }) {
+                    Checkbox(
+                        checked = m.lc.idCheck,
+                        onCheckedChange = {
+                            m.lc.idCheck = !m.lc.idCheck
+                            if(!m.lc.idCheck) m.lc.autoLogin=false
+                        })
                     Text(text = "ID 저장", modifier = Modifier.padding(4.dp))
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { m.lc.autoLogin=!m.lc.autoLogin }) {
-                    Checkbox(checked = m.lc.autoLogin, onCheckedChange = {m.lc.autoLogin=!m.lc.autoLogin})
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable {
+                        m.lc.autoLogin = !m.lc.autoLogin
+                        if(m.lc.autoLogin) m.lc.idCheck=true
+                    }) {
+                    Checkbox(
+                        checked = m.lc.autoLogin,
+                        onCheckedChange = {
+                            m.lc.autoLogin = !m.lc.autoLogin
+                            if(m.lc.autoLogin) m.lc.idCheck=true
+                        })
                     Text(text = "자동 로그인", modifier = Modifier.padding(4.dp))
                 }
             }
@@ -77,7 +99,9 @@ fun LoginView(routeAction: RouteAction, m : MainViewModel) {
             Spacer(modifier = Modifier.height(20.dp))
             Button(onClick = {
                 if (m.lc.id != "" && m.lc.pwd != "") {
+                    m.lc.saveInfo()
                     m.lcheck = true
+                    routeAction.goBack()
                 } else {
                     scope.launch { snackBarHostState.showSnackbar(message = "로그인 오류") }
                 }
@@ -90,9 +114,6 @@ fun LoginView(routeAction: RouteAction, m : MainViewModel) {
             }) {
                 Text(text = "회원가입")
             }
-
-
         }
     }
-
 }

@@ -6,10 +6,35 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.e.wdcapp.dataclass.Board
 import com.e.wdcapp.dataclass.GameInfo
+import com.e.wdcapp.dataclass.LoginData
+import com.e.wdcapp.login.LoginRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 class MainViewModel : ViewModel() {
+
     var progress by mutableStateOf(false)
     var lcheck by mutableStateOf(false)
+    fun readLoginInfo() : LoginInfo {
+        val context = App.context()
+        val repository = LoginRepository(context)
+        var loginInfo : LoginInfo
+        runBlocking(Dispatchers.IO) {
+            loginInfo = repository.readLoginInfo()
+        }
+        return loginInfo
+    }
+
+    fun writeLoginInfo(loginData: LoginData?){
+        val context = App.context()
+        val repository = LoginRepository(context)
+        runBlocking (Dispatchers.IO){
+            if(loginData!=null){
+                repository.writeLoginInfo(loginData)
+            }
+        }
+        return
+    }
 
     class RegisterClass(){
         var id by mutableStateOf("")
@@ -32,7 +57,42 @@ class MainViewModel : ViewModel() {
         var idCheck by mutableStateOf(false)
         var autoLogin by mutableStateOf(false)
         fun init(){
+            val l = readLoginInfo()
+            id = l.id
+            pwd = l.pwd
+            idCheck = l.saveId
+            autoLogin = l.autoLogin
+        }
+        fun saveInfo(){
+            if(autoLogin){
+                writeLoginInfo(LoginData(id,pwd,idCheck,autoLogin))
+            }
+            else if(idCheck){
+                writeLoginInfo(LoginData(id,"",idCheck,autoLogin))
+            }
+            else {
+                writeLoginInfo(LoginData("","",idCheck,autoLogin))
+            }
+        }
 
+        private fun readLoginInfo() : LoginInfo {
+            val context = App.context()
+            val repository = LoginRepository(context)
+            var loginInfo : LoginInfo
+            runBlocking(Dispatchers.IO) {
+                loginInfo = repository.readLoginInfo()
+            }
+            return loginInfo
+        }
+        private fun writeLoginInfo(loginData: LoginData?){
+            val context = App.context()
+            val repository = LoginRepository(context)
+            runBlocking (Dispatchers.IO){
+                if(loginData!=null){
+                    repository.writeLoginInfo(loginData)
+                }
+            }
+            return
         }
     }
     var lc = LoginClass()
@@ -60,6 +120,7 @@ class MainViewModel : ViewModel() {
         Board("대한민국 화이팅2","2022/11/10 11:00","민기형님",5),
         Board("대한민국 화이팅3","2022/11/10 11:00","민기형님",5)
     )
+
 
 
 }
