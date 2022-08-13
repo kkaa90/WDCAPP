@@ -1,7 +1,6 @@
 package com.e.wdcapp.board
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerState
@@ -31,5 +30,9 @@ fun BoardView(routeAction: RouteAction, scope: CoroutineScope, drawerState: Draw
 
 @Composable
 fun BoardItem(board: Board){
-    
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Column() {
+
+        }
+    }
 }

@@ -68,6 +68,7 @@ fun NavigationGraph(starting: String = NAVROUTE.LOADING.routeName) {
         drawerState = drawerState,
         gesturesEnabled = mainViewModel.progress
     ) {
+
         NavHost(
             navController = navController,
             startDestination = starting

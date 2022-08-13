@@ -2,6 +2,7 @@ package com.e.wdcapp.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -9,8 +10,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -23,6 +27,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginView(routeAction: RouteAction, m: MainViewModel) {
+    val focusManager = LocalFocusManager.current
     LaunchedEffect(true) {
         m.lc.init()
     }
@@ -54,28 +59,54 @@ fun LoginView(routeAction: RouteAction, m: MainViewModel) {
             TextField(
                 label = { Text(text = "Username") },
                 value = m.lc.id,
-                onValueChange = { m.lc.id = it })
+                onValueChange = { m.lc.id = it },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                )
+            )
+
 
             Spacer(modifier = Modifier.height(20.dp))
             TextField(
                 label = { Text(text = "Password") },
                 value = m.lc.pwd,
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                onValueChange = { m.lc.pwd = it })
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                onValueChange = { m.lc.pwd = it },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        if (m.lc.id != "" && m.lc.pwd != "") {
+                            m.lc.saveInfo()
+                            m.lCheck = true
+                            routeAction.goBack()
+                        } else {
+                            scope.launch { snackBarHostState.showSnackbar(message = "로그인 오류") }
+                        }
+                        focusManager.clearFocus()
+                    }
+                )
+                )
             Spacer(modifier = Modifier.height(20.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable {
                         m.lc.idCheck = !m.lc.idCheck
-                        if(!m.lc.idCheck) m.lc.autoLogin=false
+                        if (!m.lc.idCheck) m.lc.autoLogin = false
                     }) {
                     Checkbox(
                         checked = m.lc.idCheck,
                         onCheckedChange = {
                             m.lc.idCheck = !m.lc.idCheck
-                            if(!m.lc.idCheck) m.lc.autoLogin=false
+                            if (!m.lc.idCheck) m.lc.autoLogin = false
                         })
                     Text(text = "ID 저장", modifier = Modifier.padding(4.dp))
                 }
@@ -84,13 +115,13 @@ fun LoginView(routeAction: RouteAction, m: MainViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable {
                         m.lc.autoLogin = !m.lc.autoLogin
-                        if(m.lc.autoLogin) m.lc.idCheck=true
+                        if (m.lc.autoLogin) m.lc.idCheck = true
                     }) {
                     Checkbox(
                         checked = m.lc.autoLogin,
                         onCheckedChange = {
                             m.lc.autoLogin = !m.lc.autoLogin
-                            if(m.lc.autoLogin) m.lc.idCheck=true
+                            if (m.lc.autoLogin) m.lc.idCheck = true
                         })
                     Text(text = "자동 로그인", modifier = Modifier.padding(4.dp))
                 }
